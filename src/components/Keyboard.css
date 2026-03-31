@@ -1,0 +1,71 @@
+.keyboard-container {
+  display: flex;
+  justify-content: center;
+  padding: 16px 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.keyboard-svg {
+  width: 100%;
+  max-width: 700px;
+  height: auto;
+  display: block;
+}
+
+.key {
+  cursor: pointer;
+  transition: fill 0.05s ease;
+}
+
+.white-key {
+  fill: #ffffff;
+  stroke: #333;
+  stroke-width: 1;
+}
+
+.white-key:hover {
+  fill: #e8e8e8;
+}
+
+.white-key-active {
+  fill: #c8e6c9;
+  stroke: #4caf50;
+}
+
+.black-key {
+  fill: #222;
+  stroke: #111;
+  stroke-width: 1;
+}
+
+.black-key:hover {
+  fill: #444;
+}
+
+.black-key-active {
+  fill: #4caf50;
+  stroke: #388e3c;
+}
+
+.key-label {
+  fill: #666;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.key-label-black {
+  fill: #ccc;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  pointer-events: none;
+}
+
+.note-label {
+  fill: #1976d2;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  font-size: 13px;
+  pointer-events: none;
+}

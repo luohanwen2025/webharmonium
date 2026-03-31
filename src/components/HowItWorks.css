@@ -1,0 +1,49 @@
+.how-it-works {
+  padding: 64px 24px;
+  background: #f8f9fa;
+}
+
+.how-it-works-inner {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.step-number {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #1976d2;
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.step-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 6px;
+}
+
+.step-desc {
+  font-size: 15px;
+  color: #666;
+  line-height: 1.6;
+  margin: 0;
+}
