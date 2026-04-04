@@ -1,24 +1,17 @@
-import { Header } from './components/Header';
-import { Harmonium } from './components/Harmonium';
-import { Hero } from './components/Hero';
-import { Features } from './components/Features';
-import { HowItWorks } from './components/HowItWorks';
-import { FAQ } from './components/FAQ';
-import { Footer } from './components/Footer';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HomePage } from './pages/HomePage';
+import { BlogListPage } from './pages/BlogListPage';
+import { BlogPostPage } from './pages/BlogPostPage';
 
 function App() {
   return (
-    <>
-      <Header />
-      <main>
-        <Hero />
-        <Harmonium />
-        <Features />
-        <HowItWorks />
-        <FAQ />
-      </main>
-      <Footer />
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/blog" element={<BlogListPage />} />
+        <Route path="/blog/:slug" element={<BlogPostPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
