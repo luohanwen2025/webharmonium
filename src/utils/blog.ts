@@ -6,10 +6,10 @@ export interface BlogPost {
   content: string;
 }
 
-const mdModules = import.meta.glob<string>('../blog/*.md', {
+const mdModules = import.meta.glob('../blog/*.md', {
   query: '?raw',
   eager: true,
-});
+}) as Record<string, { default: string }>;
 
 function parseFrontmatter(raw: string): { meta: { title: string; date: string; description: string }; content: string } {
   const match = raw.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
@@ -46,8 +46,8 @@ function slugFromPath(path: string): string {
 }
 
 const allPosts: BlogPost[] = Object.entries(mdModules)
-  .map(([path, raw]) => {
-    const { meta, content } = parseFrontmatter(raw);
+  .map(([path, mod]) => {
+    const { meta, content } = parseFrontmatter(mod.default);
     return {
       slug: slugFromPath(path),
       title: meta.title,
