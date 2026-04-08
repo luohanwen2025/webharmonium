@@ -38,7 +38,9 @@ ${urls.map((u) => `  <url>
 `
 
       const distDir = resolve(__dirname, 'dist')
+      const publicDir = resolve(__dirname, 'public')
       writeFileSync(resolve(distDir, 'sitemap.xml'), xml)
+      writeFileSync(resolve(publicDir, 'sitemap.xml'), xml)
       console.log(`Generated sitemap.xml with ${urls.length} URLs`)
     },
   }
