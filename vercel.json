@@ -5,6 +5,7 @@
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "/sitemap.xml" },
     { "source": "/robots.txt", "destination": "/robots.txt" },
+    { "source": "/21a22f70933e4710a979aeb0b25fa0f2.txt", "destination": "/21a22f70933e4710a979aeb0b25fa0f2.txt" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
