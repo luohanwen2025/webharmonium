@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useAudioEngine } from '../hooks/useAudioEngine';
 import { useKeyboard } from '../hooks/useKeyboard';
 import { useSettings } from '../hooks/useSettings';
@@ -10,6 +10,28 @@ export function Harmonium() {
   const { settings, updateSetting } = useSettings();
   const engine = useAudioEngine();
   const [activeKeys, setActiveKeys] = useState<Set<number>>(new Set());
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Auto-load when section becomes visible
+  useEffect(() => {
+    if (engine.isLoaded || engine.isLoading) return;
+
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          engine.load();
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, [engine]);
 
   const handleNoteOn = useCallback((midiNote: number) => {
     engine.noteOn(midiNote, settings.octave, settings.stackCount);
@@ -26,7 +48,6 @@ export function Harmonium() {
   }, [engine, settings.octave, settings.stackCount]);
 
   const handleMidiNoteOn = useCallback((_note: number, _velocity: number) => {
-    // MIDI noteOn uses the raw MIDI note number directly
     engine.noteOn(_note, settings.octave, settings.stackCount);
     setActiveKeys((prev) => new Set(prev).add(_note));
   }, [engine, settings.octave, settings.stackCount]);
@@ -73,21 +94,53 @@ export function Harmonium() {
     updateSetting('stackCount', next);
   }, [settings.stackCount, settings.octave, updateSetting]);
 
-  if (!engine.isLoaded) {
+  // Loading state: show keyboard with overlay
+  if (engine.isLoading) {
     return (
-      <section className="harmonium-section" id="harmonium">
+      <section className="harmonium-section" id="harmonium" ref={sectionRef}>
+        <div className="harmonium-inner">
+          <div className="harmonium-loading-overlay">
+            <div className="loading-spinner" />
+            <p className="loading-text">Loading harmonium...</p>
+          </div>
+          <Keyboard
+            onNoteOn={handleNoteOn}
+            onNoteOff={handleNoteOff}
+            activeKeys={activeKeys}
+          />
+          <Controls
+            useReverb={settings.useReverb}
+            transpose={settings.transpose}
+            octave={settings.octave}
+            stackCount={settings.stackCount}
+            onReverbChange={handleReverbChange}
+            onTransposeChange={handleTransposeChange}
+            onOctaveChange={handleOctaveChange}
+            onStackChange={handleStackChange}
+            midiOnNoteOn={handleMidiNoteOn}
+            midiOnNoteOff={handleMidiNoteOff}
+          />
+        </div>
+      </section>
+    );
+  }
+
+  // Error state: show retry button
+  if (engine.error) {
+    return (
+      <section className="harmonium-section" id="harmonium" ref={sectionRef}>
         <div className="load-container">
+          <p className="load-error">Failed to load: {engine.error}</p>
           <button className="load-button" onClick={engine.load}>
-            Load Harmonium
+            Try Again
           </button>
-          <p className="load-hint">Click to initialize the audio engine</p>
         </div>
       </section>
     );
   }
 
   return (
-    <section className="harmonium-section" id="harmonium">
+    <section className="harmonium-section" id="harmonium" ref={sectionRef}>
       <div className="harmonium-inner">
         <Keyboard
           onNoteOn={handleNoteOn}

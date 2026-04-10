@@ -9,7 +9,7 @@ const steps = [
   {
     number: '2',
     title: 'Play Harmonium',
-    description: 'Click "Load Harmonium", then press keys on your computer keyboard or click the on-screen keys to play harmonium notes.',
+    description: 'Press keys on your computer keyboard or click the on-screen keys to play harmonium notes. The audio loads automatically when you scroll down.',
   },
   {
     number: '3',

@@ -3,6 +3,8 @@ import { SAMPLE_URL, REVERB_URL, MIDDLE_C, ROOT_KEY, OCTAVE_MAP, BASE_KEY_NAMES 
 
 interface AudioEngine {
   isLoaded: boolean;
+  isLoading: boolean;
+  error: string | null;
   load: () => Promise<void>;
   noteOn: (note: number, currentOctave: number, stackCount: number) => void;
   noteOff: (note: number, currentOctave: number, stackCount: number) => void;
@@ -14,6 +16,9 @@ interface AudioEngine {
 
 export function useAudioEngine(): AudioEngine {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const loadCalledRef = useRef(false);
   const contextRef = useRef<AudioContext | null>(null);
   const gainNodeRef = useRef<GainNode | null>(null);
   const reverbNodeRef = useRef<ConvolverNode | null>(null);
@@ -82,31 +87,43 @@ export function useAudioEngine(): AudioEngine {
   }, [buildKeyMap, setSourceNode]);
 
   const load = useCallback(async (): Promise<void> => {
-    const ctx = new AudioContext();
-    contextRef.current = ctx;
+    if (loadCalledRef.current) return;
+    loadCalledRef.current = true;
+    setIsLoading(true);
+    setError(null);
 
-    const gainNode = ctx.createGain();
-    gainNode.gain.value = 0.3;
-    gainNode.connect(ctx.destination);
-    gainNodeRef.current = gainNode;
+    try {
+      const ctx = new AudioContext();
+      contextRef.current = ctx;
 
-    // Load reverb
-    const reverbResponse = await fetch(REVERB_URL);
-    const reverbArrayBuffer = await reverbResponse.arrayBuffer();
-    const reverbBuffer = await ctx.decodeAudioData(reverbArrayBuffer);
-    const convolver = ctx.createConvolver();
-    convolver.buffer = reverbBuffer;
-    convolver.connect(ctx.destination);
-    reverbNodeRef.current = convolver;
+      const gainNode = ctx.createGain();
+      gainNode.gain.value = 0.3;
+      gainNode.connect(ctx.destination);
+      gainNodeRef.current = gainNode;
 
-    // Load sample
-    const response = await fetch(SAMPLE_URL);
-    const arrayBuffer = await response.arrayBuffer();
-    const buffer = await ctx.decodeAudioData(arrayBuffer);
-    audioBufferRef.current = buffer;
+      // Load reverb
+      const reverbResponse = await fetch(REVERB_URL);
+      const reverbArrayBuffer = await reverbResponse.arrayBuffer();
+      const reverbBuffer = await ctx.decodeAudioData(reverbArrayBuffer);
+      const convolver = ctx.createConvolver();
+      convolver.buffer = reverbBuffer;
+      convolver.connect(ctx.destination);
+      reverbNodeRef.current = convolver;
 
-    init();
-    setIsLoaded(true);
+      // Load sample
+      const response = await fetch(SAMPLE_URL);
+      const arrayBuffer = await response.arrayBuffer();
+      const buffer = await ctx.decodeAudioData(arrayBuffer);
+      audioBufferRef.current = buffer;
+
+      init();
+      setIsLoaded(true);
+    } catch (err) {
+      loadCalledRef.current = false;
+      setError(err instanceof Error ? err.message : 'Failed to load audio engine');
+    } finally {
+      setIsLoading(false);
+    }
   }, [init]);
 
   const noteOn = useCallback((note: number, currentOctave: number, stackCount: number) => {
@@ -164,6 +181,8 @@ export function useAudioEngine(): AudioEngine {
 
   return {
     isLoaded,
+    isLoading,
+    error,
     load,
     noteOn,
     noteOff,
