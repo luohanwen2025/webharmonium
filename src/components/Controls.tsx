@@ -61,6 +61,7 @@ export function Controls({
               type="checkbox"
               checked={useReverb}
               onChange={(e) => onReverbChange(e.target.checked)}
+              aria-label="Toggle reverb effect"
             />
             <span className="toggle-slider" />
           </label>
@@ -76,7 +77,7 @@ export function Controls({
               {midiSupported ? 'Supported' : 'Not Supported'}
             </span>
           </span>
-          <button className="btn-icon" onClick={handleRefreshMIDI} title="Refresh MIDI devices">
+          <button className="btn-icon" onClick={handleRefreshMIDI} title="Refresh MIDI devices" aria-label="Refresh MIDI devices">
             &#x21bb;
           </button>
         </div>
@@ -84,6 +85,7 @@ export function Controls({
           <select
             className="midi-select"
             value={selectedDeviceId || ''}
+            aria-label="Select MIDI device"
             onChange={(e) => setSelectedDeviceId(e.target.value || null)}
           >
             <option value="">-- Select Device --</option>
@@ -103,9 +105,9 @@ export function Controls({
           <span>Transpose &mdash; {rootNote}</span>
         </div>
         <div className="control-adjust">
-          <button className="btn-adjust" onClick={() => onTransposeChange(-1)}>&minus;</button>
+          <button className="btn-adjust" onClick={() => onTransposeChange(-1)} aria-label="Decrease transpose">&minus;</button>
           <span className="control-value">{transpose}</span>
-          <button className="btn-adjust" onClick={() => onTransposeChange(1)}>+</button>
+          <button className="btn-adjust" onClick={() => onTransposeChange(1)} aria-label="Increase transpose">+</button>
         </div>
       </div>
 
@@ -115,9 +117,9 @@ export function Controls({
           <span>Octave</span>
         </div>
         <div className="control-adjust">
-          <button className="btn-adjust" onClick={() => onOctaveChange(-1)}>&minus;</button>
+          <button className="btn-adjust" onClick={() => onOctaveChange(-1)} aria-label="Decrease octave">&minus;</button>
           <span className="control-value">{octave}</span>
-          <button className="btn-adjust" onClick={() => onOctaveChange(1)}>+</button>
+          <button className="btn-adjust" onClick={() => onOctaveChange(1)} aria-label="Increase octave">+</button>
         </div>
       </div>
 
@@ -127,9 +129,9 @@ export function Controls({
           <span>Additional Reeds</span>
         </div>
         <div className="control-adjust">
-          <button className="btn-adjust" onClick={() => onStackChange(-1)}>&minus;</button>
+          <button className="btn-adjust" onClick={() => onStackChange(-1)} aria-label="Decrease additional reeds">&minus;</button>
           <span className="control-value">{stackCount}</span>
-          <button className="btn-adjust" onClick={() => onStackChange(1)}>+</button>
+          <button className="btn-adjust" onClick={() => onStackChange(1)} aria-label="Increase additional reeds">+</button>
         </div>
       </div>
     </div>

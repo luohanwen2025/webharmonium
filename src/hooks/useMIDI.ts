@@ -81,7 +81,7 @@ export function useMIDI({ onNoteOn, onNoteOff, enabled }: UseMIDIOptions): UseMI
       return;
     }
     try {
-      const access = await navigator.requestMIDIAccess();
+      const access = await navigator.requestMIDIAccess({ sysex: false });
       midiAccessRef.current = access;
       setIsSupported(true);
       setupInputs(access);
